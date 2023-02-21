@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#base_dir=/u/pandu/data/openQA/data/datasets/nq
+#set=$1 # train, test, dev
+#python3 preprocess_reader_data.py \
+#  --retriever_results ${base_dir}/tfidf-cgan/nq-${set}-rank.json \
+#  --gold_passages_src ${base_dir}/data/gold_passages_info/nq_${set}.json \
+#  --do_lower_case \
+#  --pretrained_model_cfg bert-base-uncased \
+#  --encoder_model_type hf_bert \
+#  --out_file ${base_dir}/tfidf-cgan/nq-${set}-tfidf \
+##   --is_train_set # specify this only when it is train data
+
+# main
+#base_dir=/u/pandu/data/openQA/data/datasets/$1
+#set=$2 # train, test, dev
+#retr=$3
+#if [ "$2" == "train" ]; then
+#  python3 preprocess_reader_data.py \
+#    --retriever_results ${base_dir}/nq-${set}-rank.json \
+#    --do_lower_case \
+#    --pretrained_model_cfg bert-base-uncased \
+#    --encoder_model_type hf_bert \
+#    --out_file ${base_dir}/nq-${set}-${retr} \
+#    --is_train_set # specify this only when it is train data
+#else
+#  python3 preprocess_reader_data.py \
+#    --retriever_results ${base_dir}/nq-${set}-rank.json \
+#    --do_lower_case \
+#    --pretrained_model_cfg bert-base-uncased \
+#    --encoder_model_type hf_bert \
+#    --out_file ${base_dir}/nq-${set}-${retr}
+#fi
+
+# ablation for trec100_full
+#base_dir=/u/pandu/data/openQA/data/datasets/trec
+#set=test
+#python3 preprocess_reader_data.py \
+#  --retriever_results ${base_dir}/nq-${set}-rank-full.json \
+#  --do_lower_case \
+#  --pretrained_model_cfg bert-base-uncased \
+#  --encoder_model_type hf_bert \
+#  --out_file ${base_dir}/nq-${set}-gan
+
+export base_dir=/media/data/yassir/datasets/downloads/data/retriever
+
+python preprocess_reader_data.py \
+  --retriever_results ${base_dir}/nq-dev.json \
+  --do_lower_case \
+  --pretrained_model_cfg bert-base-uncased \
+  --encoder_model_type hf_bert \
+  --out_file /media/data/yassir/datasets/output/nq-dev-out

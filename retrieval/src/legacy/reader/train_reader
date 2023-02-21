@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#python3 train_reader.py \
+#        --encoder_model_type hf_bert \
+#        --pretrained_model_cfg bert-base-uncased \
+#        --train_file /u/pandu/data/openQA/data/datasets/nq/tfidf-cgan/'nq-train*.pkl' \
+#        --dev_file /u/pandu/data/openQA/data/datasets/nq/tfidf-cgan/'nq-dev*.pkl' \
+#        --output_dir /u/pandu/data/openQA/data/datasets/nq/checkpoints/reader_from_tfidf_rank_2 \
+#        --seed 42 \
+#        --learning_rate 2e-5 \
+#        --eval_step 3000 \
+#        --eval_top_docs 10 \
+#        --warmup_steps 0 \
+#        --sequence_length 350 \
+#        --batch_size 4 \
+#        --passages_per_question 5 \
+#        --num_train_epochs 5 \
+#        --dev_batch_size 8 \
+#        --passages_per_question_predict 10
+if [[ $HOSTNAME == "Thu-407-X299" || $HOSTNAME == "THU-DELL-SERVER" ]]; then
+  base_dir=/home/zlx/data/datasets/$1
+elif [[ $HOSTNAME == *"computecanada.ca"* ]]; then
+  base_dir=/home/mutux/projects/def-jynie/mutux/data/openqa/datasets/$1
+else
+  base_dir=/u/pandu/data/openQA/data/datasets/$1
+fi
+
+if [[ "$1" == "trec" || "$1" == "webquestions" ]]; then
+  python3 train_reader.py \
+        --encoder_model_type hf_bert \
+        --pretrained_model_cfg bert-base-uncased \
+        --train_file ${base_dir}/'nq-train*.pkl' \
+        --dev_file ${base_dir}/'nq-test*.pkl' \
+        --output_dir ${base_dir}/checkpoints/reader_from_tfidf_rank_2 \
+        --seed 42 \
+        --learning_rate 2e-5 \
+        --eval_step 1000 \
+        --eval_top_docs 50 \
+        --warmup_steps 0 \
+        --sequence_length 350 \
+        --batch_size 2 \
+        --passages_per_question 20 \
+        --num_train_epochs 25 \
+        --dev_batch_size 8 \
+        --passages_per_question_predict 50
+else
+  python3 train_reader.py \
+        --encoder_model_type hf_bert \
+        --pretrained_model_cfg bert-base-uncased \
+        --train_file ${base_dir}/'nq-train*.pkl' \
+        --dev_file ${base_dir}/'nq-dev*.pkl' \
+        --output_dir ${base_dir}/checkpoints/reader_from_tfidf_rank_2 \
+        --seed 42 \
+        --learning_rate 2e-5 \
+        --eval_step 3000 \
+        --eval_top_docs 50 \
+        --warmup_steps 0 \
+        --sequence_length 200 \
+        --batch_size 2 \
+        --passages_per_question 24 \
+        --num_train_epochs 5 \
+        --dev_batch_size 8 \
+        --passages_per_question_predict 50
+
+fi
+
+# dependencies:
+# pip install spacy
+# pip install sentencepiece==0.1.91
+# pip install transformers==3.0.2

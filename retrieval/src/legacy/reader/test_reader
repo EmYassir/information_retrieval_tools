@@ -1,0 +1,120 @@
+#!/bin/bash
+#base_dir=/u/pandu/data/openQA/data/datasets/nq
+#python train_reader.py \
+#  --prediction_results_file ${base_dir}/checkpoints/reader_from_tfidf/test_predictions_test.jsonl \
+#  --eval_top_docs 50 \
+#  --dev_file ${base_dir}/tfidf/'nq-test*.pkl' \
+#  --model_file ${base_dir}/checkpoints/reader_from_tfidf_rank/dpr_reader.2.2186 \
+#  --dev_batch_size 10 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 350
+
+
+
+### NQSUB with DPR trained reader
+#base_dir=/u/pandu/data/openQA/data/datasets/nqsub
+#python train_reader.py \
+#  --prediction_results_file ${base_dir}/test_predictions_dpr_reader.jsonl \
+#  --eval_top_docs 1 3 5 10 20 30 50 100 \
+#  --dev_file ${base_dir}/'nq-test*.pkl' \
+#  --model_file /u/pandu/pyspace/effi/checkpoint/reader/nq-single-subset/hf-bert-base.cp \
+#  --dev_batch_size 10 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 200
+# ----------- results --------------
+#n=1     EM 13.93
+#n=3     EM 19.89
+#n=5     EM 22.47
+#n=10    EM 24.29
+#n=20    EM 25.60
+#n=30    EM 26.43
+#n=50    EM 26.70
+#n=100   EM 26.70
+
+#base_dir=/u/pandu/data/openQA/data/datasets/nqsub
+#python train_reader.py \
+#  --prediction_results_file ${base_dir}/test_predictions_our_reader.jsonl \
+#  --eval_top_docs 1 3 5 10 20 30 50 100 \
+#  --dev_file ${base_dir}/'nq-test*.pkl' \
+#  --model_file /u/pandu/pyspace/effi/checkpoint/reader/nqsub-our/dpr_reader.14.6440 \
+#  --dev_batch_size 10 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 200
+#n=1     EM 15.26
+#n=3     EM 21.55
+#n=5     EM 24.24
+#n=10    EM 26.65
+#n=20    EM 28.37
+#n=30    EM 28.73
+#n=50    EM 29.45
+#n=100   EM 29.45
+
+# $1=nq/dpr_retrieval_sub200
+#CUDA_VISIBLE_DEVICES=0 python train_reader.py \
+#  --prediction_results_file /u/pandu/data/openQA/data/datasets/$1/test_predictions_our_reader.jsonl \
+#  --eval_top_docs 1 3 5 10 20 30 50 100 \
+#  --dev_file /u/pandu/data/openQA/data/datasets/$1/'nq-test*.pkl' \
+#  --model_file /u/pandu/pyspace/effi/checkpoint/reader/nqsub-our/dpr_reader.14.6440 \
+#  --dev_batch_size 12 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 200
+#n=1	EM 15.76
+#n=3	EM 21.27
+#n=5	EM 23.38
+#n=10	EM 24.93
+#n=20	EM 26.40
+#n=30	EM 26.51
+#n=50	EM 26.79
+#n=100	EM 26.79
+
+#### Our ranker, our reader
+#base_dir=/u/pandu/data/openQA/data/datasets/$1
+#python train_reader.py \
+#  --prediction_results_file ${base_dir}/test_predictions_test.jsonl \
+#  --eval_top_docs 1 3 5 10 20 30 50 100 \
+#  --dev_file ${base_dir}/'nq-test*.pkl' \
+#  --model_file ${base_dir}/checkpoints/reader_from_tfidf_rank_2/dpr_reader.1.10409 \
+#  --dev_batch_size 10 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 200
+
+#### ablation study on quasart k=[1-50] $1=k
+CUDA_VISIBLE_DEVICES=0 python train_reader.py \
+  --prediction_results_file /u/pandu/data/openQA/data/datasets/quasart/test_predictions_our_reader.jsonl \
+  --eval_top_docs $1 \
+  --dev_file /u/pandu/data/openQA/data/datasets/quasart/'nq-test*.pkl' \
+  --model_file /u/pandu/data/openQA/data/datasets/quasart/checkpoints/reader_from_tfidf_rank_2/dpr_reader.1.10409 \
+  --dev_batch_size 12 \
+  --passages_per_question_predict $1 \
+  --sequence_length 200
+
+#### ablation study on searchqa k=[1-50] $1=k
+#CUDA_VISIBLE_DEVICES=0 python train_reader.py \
+#  --prediction_results_file /u/pandu/data/openQA/data/datasets/searchqa/test_predictions_our_reader.jsonl \
+#  --eval_top_docs $1 \
+#  --dev_file /u/pandu/data/openQA/data/datasets/searchqa/'nq-test*.pkl' \
+#  --model_file /u/pandu/data/openQA/data/datasets/searchqa/checkpoints/reader_from_tfidf_rank_2/dpr_reader.3.1644 \
+#  --dev_batch_size 12 \
+#  --passages_per_question_predict $1 \
+#  --sequence_length 200
+
+
+##### trec test on trec100_full after answer being merged into trec folder nq-test-rank-full.json -> nq-test-gan*.pkl
+#python test_reader.py \
+#  --prediction_results_file /u/pandu/data/openQA/data/datasets/trec/test_predictions_test.jsonl \
+#  --eval_top_docs 1 3 5 10 20 30 50 100 \
+#  --dev_file /u/pandu/data/openQA/data/datasets/trec/'nq-test-gan*.pkl' \
+#  --model_file /u/pandu/data/openQA/data/datasets/trec/checkpoints/reader_from_tfidf_rank_2/dpr_reader.1.412 \
+#  --dev_batch_size 10 \
+#  --passages_per_question_predict 50 \
+#  --sequence_length 350
+##n=1     EM 16.42
+##n=3     EM 23.32
+##n=5     EM 23.97
+##n=10    EM 27.09
+##n=20    EM 28.57
+##n=30    EM 29.06
+##n=50    EM 29.23
+##n=100   EM 29.23
+
+
